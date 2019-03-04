@@ -1,48 +1,21 @@
-//Constructor de la clae
+//El primer patron(clase greet) se hizo en la Clase_2 en github
 
-function Person(firstName, lastName) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-}
+let greet2 = require('./greet2').greet;
+greet2();
 
-/*Funcion prototipo de nombre greet
+let greet3 = require('./greet3');
+greet3.greet();
+greet3.greeting = 'Changed Hello World';
 
-Los prototipos tienen herencia, en este caso hereda del objeto Person*/
+//require solo se puede instanciar una vez, por eso, siempre apuntará a la misma direccion de memoria
+//Entonces al momento de cambiar el saludo (greet3.greeting), en la segunda instancia se imprime el cambio
 
-Person.prototype.greet = function(){
-    console.log("Hello "+this.firstName+" "+this.lastName);
-}
+let greet3b = require('./greet3');
+greet3b.greet();
 
-let john = new Person('John', 'Doe');
-john.greet();
+let greet4 = require('./greet4');
+let grt = new greet4();
+grt.greet();
 
-let jane = new Person('Jane', 'Doe');
-jane.greet();
-
-console.log(john.__proto__);
-console.log(jane.__proto__);
-console.log(john.__proto__ === jane.__proto__);
-
-
-//Valores primitivos y funciones, un valor primitivo es aquel que solo tiene un valor (int, string,etc)
-
-/*Pasar por valores, en esto, la variable a no cambia, pero la variable en la funcion si*/
-function change(b){
-    b = 2;
-}
-
-let a = 1;
-change(a);
-console.log(a);
-
-/*Al pasar datos por referencia, se pasan objetos y los valores cambian tanto en la funcion como en el objeto*/
-
-function changeObj(d){
-    d.prop1 = function(){};
-    d.prop2 = {};
-}
-
-let c = {}; //Representa un objeto vacio
-c.prop1 = {};
-changeObj(c);
-console.log(c);
+let greet5 = new require('./greet5').greet;
+greet5();
