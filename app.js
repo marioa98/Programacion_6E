@@ -1,21 +1,54 @@
-//El primer patron(clase greet) se hizo en la Clase_2 en github
+//Object properties and methods
+let obj ={
+    greet: 'Hello'
+}
 
-let greet2 = require('./greet2').greet;
-greet2();
+//se  accede al objeto
+console.log(obj.greet);
 
-let greet3 = require('./greet3');
-greet3.greet();
-greet3.greeting = 'Changed Hello World';
+//Se accede a la propiedad del objeto de acuerdo al indice
+console.log(obj['greet']);
 
-//require solo se puede instanciar una vez, por eso, siempre apuntará a la misma direccion de memoria
-//Entonces al momento de cambiar el saludo (greet3.greeting), en la segunda instancia se imprime el cambio
+//Se accede a una propiedad especifica del objeto
+let prop = 'greet';
+console.log(obj[prop]);
 
-let greet3b = require('./greet3');
-greet3b.greet();
+//Functions and arrays
+let arr = [];
 
-let greet4 = require('./greet4');
-let grt = new greet4();
-grt.greet();
+//===========================================================================
 
-let greet5 = new require('./greet5').greet;
-greet5();
+//Se van agregando items a la array (en este caso se van ingresando funciones)
+arr.push(function(){
+    console.log('Hello World 1');
+});
+
+arr.push(function(){
+    console.log('Hello World 2');
+});
+
+arr.push(function(){
+    console.log('Hello World 3');
+});
+
+//=============================================================================
+
+//Se va accediendo a cada uno de los elementos del array
+arr.forEach(function(item){
+    item();
+});
+
+let Emitter = require('./emitter');
+let emtr = new Emitter();
+let eventConfig = require('./config').events;
+
+emtr.on(eventConfig.GREET, function(){
+    console.log('Otra vez el mismo pinche hello');
+});
+
+emtr.on('greet', function(){
+    console.log('O que la madre');
+});
+
+console.log('Hello como por milesima vez');
+emtr.emit('greet');
