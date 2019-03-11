@@ -1,54 +1,64 @@
-//Object properties and methods
-let obj ={
-    greet: 'Hello'
+let person = {
+    firtsName: '',
+    lastName: '',
+    greet: function(){
+        return this.firtsName + ' '+this.lastName;
+    }
 }
 
-//se  accede al objeto
-console.log(obj.greet);
+/*Los objetos john y jane no contienenn ningun atributo, sin embargo, al heredar del objeto person,
+obtienen los atributos*/
 
-//Se accede a la propiedad del objeto de acuerdo al indice
-console.log(obj['greet']);
+let john = Object.create(person);
+john.firtsName = 'John';
+john.lastName = 'Walker';
 
-//Se accede a una propiedad especifica del objeto
-let prop = 'greet';
-console.log(obj[prop]);
+let jane = Object.create(person);
+jane.firtsName = 'Jane';
+jane.lastName = 'Foster';
 
-//Functions and arrays
-let arr = [];
+console.log(john.greet());
+console.log(jane.greet());
 
-//===========================================================================
+//=========================================================================================================0
 
-//Se van agregando items a la array (en este caso se van ingresando funciones)
-arr.push(function(){
-    console.log('Hello World 1');
+/*El objeto Greetr solo contiene el atributo greetign, sin embargo con la cadena de prototipado 
+este objeto hereda las propiedades del objeto EventEmitter, el cual es un objeto que usa la libreria 'events*/
+
+let EventEmitter = require('events');
+let utils = require('util');
+
+
+function Greetr(){
+    this.greeting = 'Hello World ';
+}
+
+utils.inherits(Greetr, EventEmitter);
+
+Greetr.prototype.greet = function(data){
+    console.log(this.greeting+": "+data);
+    this.emit('greet '+data); //emit() es un metodo de la libreria events, y por prototype chain, Greetr lo hereda
+}
+
+let greet1 = new Greetr();
+
+greet1.on('greet', function(data){
+    console.log('Someone greeted: '+data);
 });
 
-arr.push(function(){
-    console.log('Hello World 2');
-});
+greet1.greet('Tony');
 
-arr.push(function(){
-    console.log('Hello World 3');
-});
+//=====================================================================================================================
 
-//=============================================================================
+let obj = {
+    name: 'John Doe',
+    greet: function(){
+        console.log(`Hello ${this.name}`)
+    }
+}
 
-//Se va accediendo a cada uno de los elementos del array
-arr.forEach(function(item){
-    item();
-});
 
-let Emitter = require('./emitter');
-let emtr = new Emitter();
-let eventConfig = require('./config').events;
-
-emtr.on(eventConfig.GREET, function(){
-    console.log('Otra vez el mismo pinche hello');
-});
-
-emtr.on('greet', function(){
-    console.log('O que la madre');
-});
-
-console.log('Hello como por milesima vez');
-emtr.emit('greet');
+//Con los metodos call y apply permiten modificar las propiedades del objeto
+obj.greet();
+obj.greet.call({name: 'John Doe'});
+obj.greet.apply({name: 'Jane Doe'});
