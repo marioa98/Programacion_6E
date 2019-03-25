@@ -1,23 +1,21 @@
+'use strict';
+//Ejercicio con clases ES6
 let EventEmitter = require('events');
-let utils = require('util');
+let util = require('util');
 
-
-function Greetr(){
-    EventEmitter.call(this);
-    this.greeting = 'Hello World ';
+class Greetr extends EventEmitter{ //Hereda funciones de EventEmitter
+    constructor(){
+        super(); //Se manda a llamar al super constructor
+        this.greeting = 'Hello World'; //Atributo de la clase Greetr
+    }
+    greet(data){
+        this.on('greet', function(data){ //Metodo heredado de greetr
+            console.log('Metodo heredado');
+        })
+        console.log(`${this.greeting}: ${data}`);
+        this.emit('greet', data);
+    }
 }
 
-utils.inherits(Greetr, EventEmitter);
-
-Greetr.prototype.greet = function(data){
-    console.log(this.greeting+": "+data);
-    this.emit('greet '+data); //emit() es un metodo de la libreria events, y por prototype chain, Greetr lo hereda
-}
-
-let greet1 = new Greetr();
-
-greet1.on('greet', function(data){
-    console.log('Someone greeted: '+data);
-});
-
-greet1.greet('Tony');
+let greetr = new Greetr();
+greetr.greet('Mario');
