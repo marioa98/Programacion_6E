@@ -1,23 +1,21 @@
-//HTTP basic server
+let express = require('express');
+let app = express();
 
-let http = require('http');
-let fs = require('fs');
+let port = process.env.PORT || 3000; //Variable de entorno que declara el puerto en el que se escuche la aplicacion
 
-http.createServer(function(req, res){
+//Escuchar en el puerto establecido || (OR) en el puerto 3000
 
-    if(req.url === '/'){
-        fs.createReadStream(__dirname+'/index.html').pipe(res);
-    }else if(req.url === '/api'){
-        res.writeHead(200, {'Content-Type': 'application/json'});//Header of request
-        let obj = {
-            firstname: 'John',
-            lastname: 'Doe'
-        };
-        res.end(JSON.stringify(obj)); //Body of request
-    }else{
-        res.writeHead(404);
-        res.end();
-    }
-
+app.get('/', function(req, res){
+    res.send('<html><head></head><body><h1>Hello World !</h1></body></html>');
     
-}).listen(1337, '127.0.0.1');
+});
+
+app.get('/Person', function(req, res){
+    res.send('<html><head></head><body><h1> Person:'+
+    req.params.id+'</h1></body></html>');
+})
+
+app.get('/api', function(req, res){
+    res.json({firstname: 'John', lastname: 'Doe'}); // Muestra en pantalla un JSON (El creado)
+});
+app.listen(3000);
