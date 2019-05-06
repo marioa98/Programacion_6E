@@ -1,21 +1,16 @@
-let express = require('express');
-let app = express();
+let request = require('request');
 
-let port = process.env.PORT || 3000; //Variable de entorno que declara el puerto en el que se escuche la aplicacion
+function getWeather(lat, lon){
+    let url = 'https://api.darksky.net/forecast/e515f503ac381162d499ac21b4cb3043/'+lat+','+lon;
+    request(url,function (err, response, body) {
+        if(err) throw err;
+        else{
+            let data = JSON.parse(body);
+            let celsius = (data.currently.temperature-32)*(5/9);
+            console.log('Temperatura: ' + celsius+'°C');
+            
+        }
+    })
+}
 
-//Escuchar en el puerto establecido || (OR) en el puerto 3000
-
-app.get('/', function(req, res){
-    res.send('<html><head></head><body><h1>Hello World !</h1></body></html>');
-    
-});
-
-app.get('/Person', function(req, res){
-    res.send('<html><head></head><body><h1> Person:'+
-    req.params.id+'</h1></body></html>');
-})
-
-app.get('/api', function(req, res){
-    res.json({firstname: 'John', lastname: 'Doe'}); // Muestra en pantalla un JSON (El creado)
-});
-app.listen(3000);
+getWeather(19.24792386537396, -103.6995184766424);
