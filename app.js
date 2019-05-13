@@ -1,7 +1,14 @@
 let request = require('request');
 
-function getWeather(lat, lon){
-    let url = 'https://api.darksky.net/forecast/e515f503ac381162d499ac21b4cb3043/'+lat+','+lon;
+let weather = new Promise(function(resolve,reject){
+    resolve();
+    reject(reason);
+
+});
+
+weather.then(
+    function getWeather(lat, lon){
+    let url = 'https://api.darksky.net/forecast/e515f503ac381162d499ac21b4cb3043/19.24792386537396, -103.6995184766424';
     request(url,function (err, response, body) {
         if(err) throw err;
         else{
@@ -12,5 +19,8 @@ function getWeather(lat, lon){
         }
     })
 }
-
-getWeather(19.24792386537396, -103.6995184766424);
+).catch(
+    function(reason) {
+        console.log('Manejar promesa rechazada ('+reason+') aquí.');
+    
+});
