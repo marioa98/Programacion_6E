@@ -1,86 +1,51 @@
-let request = require('request');
+const express = require('express');
+const app = express();
+const mongoose = require('mongoose');
 
-let address = new Promise(function(resolve, reject) {
-    resolve('Colima');
-    reject(reason);
+
+/* 
+    Se realiza una unica conexion a una base de datos de MongoDB, asimismo se establece el puerto 
+    en donde se realizará la conexión local en el navegador y se definirá la estructura de la base de datos
+*/
+
+var port = process.env.PORT || 3000; //Ruta para realizar GET en el navegador y servidor local
+mongoose.connect('mongodb://root:root123@ds147125.mlab.com:47125/addressbookgac'); //Conexión a la base de datos MongoDB
+let schema = mongoose.Schema; //se establece un nuevo schema
+
+//Se define la estructura del schema que se va a almacenar en la base de datos
+let nameSchema = new schema({
+    firstname : String
 });
 
-address.then(
-    function getAddress(address) {
-        let ad = address.replace(' ', '%20');
-        let geoAPI = `https://us1.locationiq.com/v1/search.php?key=4d8ba861ad623c&q=${ad}&format=json`;
-    
-        request(geoAPI, function (err, response, body) {
-            if (err) throw err;
-            else {
-                let data = JSON.parse(body);
-                let lat = data[0]['lat'];
-                let lon = data[0]['lon'];
+let name = mongoose.model('Person', nameSchema);
 
-                let coord = lat +','+lon;
-    
-                console.log('Lugar: ' + address + '\nCoordenadas: ' + lat + ', ' + lon);
-    
-                let weather = new Promise(function (resolve, reject) {
-                    resolve(coord);
-                    reject(reason);
-                })
-    
-                weather.then(
-                    function getWeather(coord) {
-                        let url = `https://api.darksky.net/forecast/e515f503ac381162d499ac21b4cb3043/${coord}`;
-                        request(url, function (err, response, body) {
-                            if (err) throw err;
-                            else {
-
-                                let data = JSON.parse(body);
-                                let celsius = (data.currently.temperature - 32) * (5 / 9);
-                                console.log('Temperatura: ' + celsius + '°C');
-
-                                let uv = new Promise(function (resolve, reject) {
-                                    resolve(coord);
-                                    reject(reason);
-                                })
-
-                                uv.then(function UV_Radiation(coord) {
-
-                                    let location = coord.split(',');
-                                    let lat = location[0];
-                                    let lon = location[1];
-
-                                    let options = {
-                                        method: 'GET',
-                                        url: 'https://api.openuv.io/api/v1/uv',
-                                        qs: {
-                                            lat: `${lat}`,
-                                            lng: `${lon}`
-                                        },
-                                        headers: {
-                                            'content-type': 'application/json',
-                                            'x-access-token': '9bfe6ae6031897d56ae49d64933890e1'
-                                        }
-                                    };
-                                
-                                    request(options, function (err, response, body) {
-                                        if (err) throw err;
-                                        else {
-                                            let data = JSON.parse(body);
-                                            console.log('Radiación UV: ' + data.result.uv);
-                                            console.log('Radiación UV Máxima: ' + data.result.uv_max);
-                                        }
-                                    })
-                                }).catch(function(reason) {
-                                    console.log('Manejar promesa rechazada ('+reason+') aquí.');
-                                })
-                            }
-                        })
-                    }
-                ).catch(function(reason) {
-                    console.log('Manejar promesa rechazada ('+reason+') aquí.');
-                })
-            }
-        })
-    }
-).catch(function(reason) {
-    console.log('Manejar promesa rechazada ('+reason+') aquí.');
+app.get('/', (req, res) => {
+	res.send('<html><head></head><body> <h1>hi</h1> </body></html>');
 });
+
+app.get('/person/:id', (req, res) => {
+	res.send(`<html><head></head><body> <h1>${req.params.id}</h1> </body></html>`);
+});
+
+app.get('/api', (req, res) => {
+	res.json({
+		firstname: 'Gerald',
+		lastname: 'Amezcua'
+	});
+});
+
+app.get('/profile/:id', (req, res)=>{
+    
+    let john = name({
+        firstname : `${req.params.id}`
+    })
+
+    john.save(function (err) {
+        if(err) throw err;
+
+        res.send(`<html><head></head><body> <h1>${req.params.id}</h1> </body></html>`);
+    })
+
+});
+
+app.listen(port);
